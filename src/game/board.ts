@@ -1,22 +1,31 @@
 import { Game } from "./game";
+import { recordMod } from "../utils/record";
+import { range } from "../utils/utils";
+import { Position, positionMod } from "./position";
 
-const toArray = (game: Game): string[][] => {
-  //TODO: rewrite
-  const arr = new Array(5);
-  for (let i = 0; i < 5; i++) {
-    arr[i] = new Array(9).fill(".");
+type Board = ReadonlyMap<string, string>;
+
+const newBoard = (game: Game): Board => {
+  return recordMod.reduceEntries(
+    game.heroes,
+    (m, k, v) => m.set(positionMod.toKey(v.position), "X"),
+    new Map<string, string>()
+  );
+};
+
+const renderBoard = (board: Board): string => {
+  return range(5).reduce((acc, y) => acc + renderRow(board, y) + "\n", "");
+};
+
+const renderRow = (board: Board, y: number): string => {
+  return range(9).reduce((acc, x) => acc + renderPos(board, x, y), "");
+};
+
+const renderPos = (board: Board, x: number, y: number): string => {
+  if (board.has(positionMod.toKey({ x, y }))) {
+    return "X";
   }
-
-  Object.entries(game.heroes).forEach(([_, hero]) => {
-    const { position } = hero;
-    arr[position.y][position.x] = "X";
-  });
-
-  return arr;
+  return ".";
 };
 
-const renderArray = (board: string[][]) => {
-  return board.reduce((acc, row) => acc + row.join(" ") + "\n", "");
-};
-
-export { toArray, renderArray };
+export const boardMod = { newBoard, renderBoard };

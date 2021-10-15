@@ -1,4 +1,6 @@
+import { recordMod } from "../utils/record";
 import { Hero } from "./hero";
+import { Position, positionMod } from "./position";
 
 export interface Game {
   readonly heroes: Readonly<Record<string, Hero>>;
@@ -23,4 +25,8 @@ const updateHero = (game: Game, hero: Hero): Game => {
   return { ...game, heroes };
 };
 
-export { create, updateHero };
+const findHeroAtPosition = (game: Game, pos: Position): Hero | null => {
+  return recordMod.findEntry(game.heroes, (_, hero) => positionMod.equals(hero.position, pos));
+};
+
+export const gameMod = { create, updateHero, findHeroAtPosition };
