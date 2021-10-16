@@ -1,33 +1,66 @@
 import { Game } from "./game/game";
-import { Boards } from "./game/board";
-import { Inputs } from "./game/input";
-import { Hero } from "./game/hero";
+import { Board } from "./game/board";
+import { Input } from "./game/input";
 
-const game = Game.newGame();
-//console.dir(g, { depth: null });
+let game = Game.newGame();
 
-const board = Boards.newBoard(game);
-//console.log(board);
-console.log(Boards.renderBoard(board));
+const board = Board.newBoard(game);
+console.log(Board.renderBoard(board));
 
-const hero = game.heroes["1"];
-const g2 = Game.updateHero(game, Hero.move(hero, { x: 2, y: 1 }));
-//console.dir(g2, { depth: null });
+const playerId = "player-1";
+const inputs = [
+  {
+    playerId,
+    source: { x: 1, y: 1 },
+    target: { x: 3, y: 1 },
+  },
+  {
+    playerId,
+    source: { x: 3, y: 1 },
+    target: { x: 5, y: 1 },
+  },
+  {
+    playerId,
+    source: { x: 5, y: 1 },
+    target: { x: 6, y: 1 },
+  },
+  // Start attacking
+  {
+    playerId,
+    source: { x: 6, y: 1 },
+    target: { x: 7, y: 1 },
+  },
+  {
+    playerId,
+    source: { x: 6, y: 1 },
+    target: { x: 7, y: 1 },
+  },
+  {
+    playerId,
+    source: { x: 6, y: 1 },
+    target: { x: 7, y: 1 },
+  },
+  {
+    playerId,
+    source: { x: 6, y: 1 },
+    target: { x: 7, y: 1 },
+  },
+];
 
-const board2 = Boards.newBoard(g2);
-//console.log(board2);
-console.log(Boards.renderBoard(board2));
-
-const result1 = Inputs.handleInput(g2, {
-  playerId: "player1",
+const result = Input.handleInput(game, {
+  playerId: "player-1",
   source: { x: 1, y: 1 },
-  target: { x: 2, y: 2 },
+  target: { x: 3, y: 1 },
 });
-//console.log("result 1", result1);
 
-const result2 = Inputs.handleInput(g2, {
-  playerId: "player1",
-  source: { x: 2, y: 1 },
-  target: { x: 2, y: 2 },
+inputs.forEach((input) => {
+  const result = Input.handleInput(game, input);
+  if (typeof result === "string") {
+    console.log(`Error was: ${result}`);
+  } else {
+    const board2 = Board.newBoard(result);
+    console.dir(result, { depth: null });
+    console.log(Board.renderBoard(board2));
+    game = result;
+  }
 });
-//console.dir(g2, { depth: null });

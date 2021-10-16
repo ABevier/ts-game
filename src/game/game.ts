@@ -54,6 +54,10 @@ const findEnemyHeroAtPosition = (game: Game, pos: Position, playerId: string): H
   return null;
 };
 
+const isEnemyHeroAtPosition = (game: Game, pos: Position, playerId: string): boolean => {
+  return findEnemyHeroAtPosition(game, pos, playerId) !== null;
+};
+
 export const Game = {
   newGame,
   updateHero,
@@ -61,4 +65,5 @@ export const Game = {
   isPositionEmpty,
   findFriendlyHeroAtPosition,
   findEnemyHeroAtPosition,
+  isEnemyHeroAtPosition,
 };

@@ -29,4 +29,4 @@ const renderPos = (board: Board, x: number, y: number): string => {
   return ".";
 };
 
-export const Boards = { newBoard, renderBoard };
+export const Board = { newBoard, renderBoard };
