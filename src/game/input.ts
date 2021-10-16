@@ -1,3 +1,5 @@
+import { option } from "fp-ts";
+import { pipe } from "fp-ts/lib/function";
 import { Game } from "./game";
 import { Hero } from "./hero";
 import { Position } from "./position";
@@ -8,13 +10,15 @@ type Input = {
   target: Position;
 };
 
+//TODO: use either types here
 const handleInput = (game: Game, { playerId, source, target }: Input): Game | string => {
-  const maybeHero = Game.findFriendlyHeroAtPosition(game, source, playerId);
-  if (maybeHero) {
-    return processCommand(game, maybeHero, target);
-  } else {
-    return `no hero at: ${source.x + "," + source.y}`;
-  }
+  return pipe(
+    Game.findFriendlyHeroAtPosition(game, source, playerId),
+    option.foldW(
+      () => `no hero at: ${source.x + "," + source.y}`,
+      (hero) => processCommand(game, hero, target)
+    )
+  );
 };
 
 //TODO: move all this stuff to a commands module?
@@ -52,13 +56,19 @@ const attackCommand = {
       Game.isEnemyHeroAtPosition(game, target, hero.playerId)
     );
   },
-  apply: (game: Game, hero: Hero, target: Position): Game | string => {
-    const enemy = Game.findEnemyHeroAtPosition(game, target, hero.playerId);
-    if (enemy) {
-      const e = Hero.applyDamage(enemy, 250);
-      return Game.updateHero(game, e);
-    }
-    return "attack failed, no enemy found";
+  apply: (game: Game, hero: Hero, target: Position): string | Game => {
+    return pipe(
+      Game.findEnemyHeroAtPosition(game, target, hero.playerId),
+      option.foldW(
+        () => "attack failed, no enemy found",
+        (enemy) =>
+          pipe(
+            Hero.applyDamage(enemy, 250),
+            // TODO: Curry
+            (e) => Game.updateHero(game, e)
+          )
+      )
+    );
   },
 };
 

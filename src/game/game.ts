@@ -1,6 +1,10 @@
+import { option } from "fp-ts";
+import { pipe } from "fp-ts/lib/function";
 import { Record } from "../utils/record";
 import { Hero } from "./hero";
 import { Position } from "./position";
+
+type Option<V> = option.Option<V>;
 
 export type Game = {
   readonly heroes: Readonly<Record<string, Hero>>;
@@ -28,34 +32,32 @@ const updateHero = (game: Game, hero: Hero): Game => {
   return { ...game, heroes };
 };
 
-const findHeroAtPosition = (game: Game, pos: Position): Hero | null => {
+const findHeroAtPosition = (game: Game, pos: Position): Option<Hero> => {
   return Record.findEntry(game.heroes, (_, hero) => Position.equals(hero.position, pos));
 };
 
 const isPositionEmpty = (game: Game, pos: Position): boolean => {
-  return findHeroAtPosition(game, pos) === null;
+  return option.isNone(findHeroAtPosition(game, pos));
 };
 
-const findFriendlyHeroAtPosition = (game: Game, pos: Position, playerId: string): Hero | null => {
-  //TODO: Need Option type BADLY
-  const hero = findHeroAtPosition(game, pos);
-  if (hero && Hero.isFriendly(hero, playerId)) {
-    return hero;
-  }
-  return null;
+const findFriendlyHeroAtPosition = (game: Game, pos: Position, playerId: string): Option<Hero> => {
+  return pipe(
+    findHeroAtPosition(game, pos),
+    //TODO: curry isFriendly maybe
+    option.filter((hero) => Hero.isFriendly(hero, playerId))
+  );
 };
 
-const findEnemyHeroAtPosition = (game: Game, pos: Position, playerId: string): Hero | null => {
-  //TODO: Need Option type BADLY
-  const hero = findHeroAtPosition(game, pos);
-  if (hero && Hero.isEnemy(hero, playerId)) {
-    return hero;
-  }
-  return null;
+const findEnemyHeroAtPosition = (game: Game, pos: Position, playerId: string): Option<Hero> => {
+  return pipe(
+    findHeroAtPosition(game, pos),
+    //TODO: curry?
+    option.filter((hero) => Hero.isEnemy(hero, playerId))
+  );
 };
 
 const isEnemyHeroAtPosition = (game: Game, pos: Position, playerId: string): boolean => {
-  return findEnemyHeroAtPosition(game, pos, playerId) !== null;
+  return option.isSome(findEnemyHeroAtPosition(game, pos, playerId));
 };
 
 export const Game = {
