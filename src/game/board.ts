@@ -1,14 +1,15 @@
 import { Game } from "./game";
-import { recordMod } from "../utils/record";
+import { Records } from "../utils/record";
 import { range } from "../utils/utils";
-import { Position, positionMod } from "./position";
+import { Positions } from "./position";
 
+//TODO: consider ImmutableJS map for this?
 type Board = ReadonlyMap<string, string>;
 
 const newBoard = (game: Game): Board => {
-  return recordMod.reduceEntries(
+  return Records.reduceEntries(
     game.heroes,
-    (m, k, v) => m.set(positionMod.toKey(v.position), "X"),
+    (m, k, v) => m.set(Positions.toKey(v.position), "X"),
     new Map<string, string>()
   );
 };
@@ -22,10 +23,10 @@ const renderRow = (board: Board, y: number): string => {
 };
 
 const renderPos = (board: Board, x: number, y: number): string => {
-  if (board.has(positionMod.toKey({ x, y }))) {
+  if (board.has(Positions.toKey({ x, y }))) {
     return "X";
   }
   return ".";
 };
 
-export const boardMod = { newBoard, renderBoard };
+export const Boards = { newBoard, renderBoard };

@@ -1,16 +1,19 @@
-import { recordMod } from "../utils/record";
-import { Hero } from "./hero";
-import { Position, positionMod } from "./position";
+import { Records } from "../utils/record";
+import { Hero, Heroes } from "./hero";
+import { Position, Positions } from "./position";
 
 export interface Game {
   readonly heroes: Readonly<Record<string, Hero>>;
 }
 
 const create = (): Game => {
-  const heroList = [
-    { id: "1", position: { x: 1, y: 1 } },
-    { id: "2", position: { x: 2, y: 2 } },
-    { id: "3", position: { x: 1, y: 3 } },
+  const heroList: Hero[] = [
+    Heroes.newHero("1", "player-1", { x: 1, y: 1 }),
+    Heroes.newHero("2", "player-1", { x: 2, y: 2 }),
+    Heroes.newHero("3", "player-1", { x: 1, y: 3 }),
+    Heroes.newHero("4", "player-2", { x: 7, y: 1 }),
+    Heroes.newHero("5", "player-2", { x: 6, y: 2 }),
+    Heroes.newHero("6", "player-2", { x: 7, y: 3 }),
   ];
 
   const heroes = heroList.reduce((acc, hero) => ({ ...acc, [hero.id]: hero }), {});
@@ -26,7 +29,11 @@ const updateHero = (game: Game, hero: Hero): Game => {
 };
 
 const findHeroAtPosition = (game: Game, pos: Position): Hero | null => {
-  return recordMod.findEntry(game.heroes, (_, hero) => positionMod.equals(hero.position, pos));
+  return Records.findEntry(game.heroes, (_, hero) => Positions.equals(hero.position, pos));
 };
 
-export const gameMod = { create, updateHero, findHeroAtPosition };
+const isPositionEmpty = (game: Game, pos: Position): boolean => {
+  return findHeroAtPosition(game, pos) === null;
+};
+
+export const Games = { create, updateHero, findHeroAtPosition, isPositionEmpty };
