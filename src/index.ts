@@ -1,9 +1,9 @@
-import { Games } from "./game/game";
+import { Game } from "./game/game";
 import { Boards } from "./game/board";
 import { Inputs } from "./game/input";
-import { Heroes } from "./game/hero";
+import { Hero } from "./game/hero";
 
-const game = Games.newGame();
+const game = Game.newGame();
 //console.dir(g, { depth: null });
 
 const board = Boards.newBoard(game);
@@ -11,7 +11,7 @@ const board = Boards.newBoard(game);
 console.log(Boards.renderBoard(board));
 
 const hero = game.heroes["1"];
-const g2 = Games.updateHero(game, Heroes.move(hero, { x: 2, y: 1 }));
+const g2 = Game.updateHero(game, Hero.move(hero, { x: 2, y: 1 }));
 //console.dir(g2, { depth: null });
 
 const board2 = Boards.newBoard(g2);

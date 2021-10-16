@@ -24,4 +24,4 @@ const findEntry = function <V>(record: Record<string, V>, func: Predicate<V>): V
   }
 };
 
-export const Records = { mapEntries, reduceEntries, findEntry };
+export const Record = { mapEntries, reduceEntries, findEntry };

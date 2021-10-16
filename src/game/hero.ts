@@ -38,7 +38,7 @@ const isEnemy = (hero: Hero, playerId: string): boolean => {
   return !isFriendly(hero, playerId);
 };
 
-export const Heroes = {
+export const Hero = {
   newHero,
   move,
   applyDamage,

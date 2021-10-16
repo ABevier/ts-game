@@ -1,7 +1,7 @@
-export interface Position {
+export type Position = {
   readonly x: number;
   readonly y: number;
-}
+};
 
 const toKey = ({ x, y }: Position): string => {
   return x + ":" + y;
@@ -19,7 +19,7 @@ const inRange = (start: Position, end: Position, range: number): boolean => {
   return distanceTo(start, end) <= range;
 };
 
-export const Positions = {
+export const Position = {
   equals,
   toKey,
   distanceTo,
