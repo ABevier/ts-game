@@ -1,12 +1,17 @@
-import { generatePrimeSync } from "crypto";
 import { Game, Games } from "./game";
 import { Hero } from "./hero";
 import { Position, Positions } from "./position";
 
-const handleInput = (game: Game, source: Position, dest: Position): Game | string => {
-  const maybeHero = Games.findHeroAtPosition(game, source);
+type Input = {
+  playerId: string;
+  source: Position;
+  target: Position;
+};
+
+const handleInput = (game: Game, { playerId, source, target }: Input): Game | string => {
+  const maybeHero = Games.findFriendlyHeroAtPosition(game, source, playerId);
   if (maybeHero) {
-    return processCommand(game, maybeHero, dest);
+    return processCommand(game, maybeHero, target);
   } else {
     return `no hero at: ${source.x + "," + source.y}`;
   }
@@ -18,7 +23,7 @@ const processCommand = (game: Game, hero: Hero, target: Position): Game | string
 
 const moveCommand = {
   match: (game: Game, hero: Hero, target: Position) => {
-    //TODO: use hero move value
+    //TODO: use hero move stat
     return Positions.inRange(hero.position, target, 2) && Games.isPositionEmpty(game, target);
   },
 };

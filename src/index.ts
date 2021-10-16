@@ -3,7 +3,7 @@ import { Boards } from "./game/board";
 import { Inputs } from "./game/input";
 import { Heroes } from "./game/hero";
 
-const game = Games.create();
+const game = Games.newGame();
 //console.dir(g, { depth: null });
 
 const board = Boards.newBoard(game);
@@ -18,8 +18,16 @@ const board2 = Boards.newBoard(g2);
 //console.log(board2);
 console.log(Boards.renderBoard(board2));
 
-const result1 = Inputs.handleInput(g2, { x: 1, y: 1 }, { x: 2, y: 2 });
+const result1 = Inputs.handleInput(g2, {
+  playerId: "player1",
+  source: { x: 1, y: 1 },
+  target: { x: 2, y: 2 },
+});
 //console.log("result 1", result1);
 
-const result2 = Inputs.handleInput(g2, { x: 2, y: 1 }, { x: 2, y: 2 });
+const result2 = Inputs.handleInput(g2, {
+  playerId: "player1",
+  source: { x: 2, y: 1 },
+  target: { x: 2, y: 2 },
+});
 //console.dir(g2, { depth: null });

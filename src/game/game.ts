@@ -6,7 +6,7 @@ export interface Game {
   readonly heroes: Readonly<Record<string, Hero>>;
 }
 
-const create = (): Game => {
+const newGame = (): Game => {
   const heroList: Hero[] = [
     Heroes.newHero("1", "player-1", { x: 1, y: 1 }),
     Heroes.newHero("2", "player-1", { x: 2, y: 2 }),
@@ -36,4 +36,29 @@ const isPositionEmpty = (game: Game, pos: Position): boolean => {
   return findHeroAtPosition(game, pos) === null;
 };
 
-export const Games = { create, updateHero, findHeroAtPosition, isPositionEmpty };
+const findFriendlyHeroAtPosition = (game: Game, pos: Position, playerId: string): Hero | null => {
+  //TODO: Need Option type BADLY
+  const hero = findHeroAtPosition(game, pos);
+  if (hero && Heroes.isFriendly(hero, playerId)) {
+    return hero;
+  }
+  return null;
+};
+
+const findEnemyHeroAtPosition = (game: Game, pos: Position, playerId: string): Hero | null => {
+  //TODO: Need Option type BADLY
+  const hero = findHeroAtPosition(game, pos);
+  if (hero && Heroes.isEnemy(hero, playerId)) {
+    return hero;
+  }
+  return null;
+};
+
+export const Games = {
+  newGame,
+  updateHero,
+  findHeroAtPosition,
+  isPositionEmpty,
+  findFriendlyHeroAtPosition,
+  findEnemyHeroAtPosition,
+};

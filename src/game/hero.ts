@@ -34,7 +34,7 @@ const isFriendly = (hero: Hero, playerId: string): boolean => {
   return hero.playerId === playerId;
 };
 
-const isOpposing = (hero: Hero, playerId: string): boolean => {
+const isEnemy = (hero: Hero, playerId: string): boolean => {
   return !isFriendly(hero, playerId);
 };
 
@@ -44,5 +44,5 @@ export const Heroes = {
   applyDamage,
   isDead,
   isFriendly,
-  isOpposing,
+  isEnemy,
 };
