@@ -1,8 +1,14 @@
-import { option } from "fp-ts";
+import { either, option } from "fp-ts";
 import { pipe } from "fp-ts/lib/function";
+import { AttackCommand } from "./command/attack";
+import { Command } from "./command/command";
+import { MoveCommand } from "./command/move";
+import { StompCommand } from "./command/stomp";
 import { Game } from "./game";
 import { Hero } from "./hero";
 import { Position } from "./position";
+
+type Either<E, A> = either.Either<E, A>;
 
 type Input = {
   playerId: string;
@@ -11,65 +17,25 @@ type Input = {
 };
 
 //TODO: use either types here
-const handleInput = (game: Game, { playerId, source, target }: Input): Game | string => {
+const handleInput = (game: Game, { playerId, source, target }: Input): Either<string, Game> => {
   return pipe(
     Game.findFriendlyHeroAtPosition(game, source, playerId),
     option.foldW(
-      () => `no hero at: ${source.x + "," + source.y}`,
+      () => either.left(`no hero at: ${source.x + "," + source.y}`),
       (hero) => processCommand(game, hero, target)
     )
   );
 };
 
-//TODO: move all this stuff to a commands module?
-type Command = {
-  match: (game: Game, hero: Hero, target: Position) => boolean;
-  apply: (game: Game, hero: Hero, target: Position) => Game | string;
-};
+const processCommand = (game: Game, hero: Hero, target: Position): Either<string, Game> => {
+  const commands: Command[] = [MoveCommand, AttackCommand, StompCommand];
+  const targetType = Game.findTargetType(game, target, hero.playerId);
 
-const processCommand = (game: Game, hero: Hero, target: Position): Game | string => {
-  const commands: Command[] = [moveCommand, attackCommand];
-
-  const maybeCommand = commands.find((cmd) => cmd.match(game, hero, target));
+  const maybeCommand = commands.find((cmd) => cmd.match(hero, targetType, target));
   if (maybeCommand) {
     return maybeCommand.apply(game, hero, target);
   }
-  return "no command to execute";
-};
-
-const moveCommand = {
-  match: (game: Game, hero: Hero, target: Position): boolean => {
-    //TODO: use hero move stat
-    return Position.inRange(hero.position, target, 2) && Game.isPositionEmpty(game, target);
-  },
-  apply: (game: Game, hero: Hero, target: Position): Game | string => {
-    //todo: pipe/flow?
-    const h = Hero.move(hero, target);
-    return Game.updateHero(game, h);
-  },
-};
-
-const attackCommand = {
-  match: (game: Game, hero: Hero, target: Position): boolean => {
-    return (
-      Position.inRange(hero.position, target, 1) &&
-      Game.isEnemyHeroAtPosition(game, target, hero.playerId)
-    );
-  },
-  apply: (game: Game, hero: Hero, target: Position): string | Game => {
-    return pipe(
-      Game.findEnemyHeroAtPosition(game, target, hero.playerId),
-      option.foldW(
-        () => "attack failed, no enemy found",
-        (enemy) =>
-          pipe(
-            Hero.applyDamage(enemy, 250),
-            // TODO: Curry
-            (e) => Game.updateHero(game, e)
-          )
-      )
-    );
-  },
+  return either.left(`no command to execute on target: ${target.x}, ${target.y}`);
 };
 
 export const Input = {

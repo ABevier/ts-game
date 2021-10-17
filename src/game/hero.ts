@@ -30,6 +30,10 @@ const isDead = (hero: Hero): boolean => {
   return hero.hp === 0;
 };
 
+const isAlive = (hero: Hero): boolean => {
+  return hero.hp > 0;
+};
+
 const isFriendly = (hero: Hero, playerId: string): boolean => {
   return hero.playerId === playerId;
 };
@@ -43,6 +47,7 @@ export const Hero = {
   move,
   applyDamage,
   isDead,
+  isAlive,
   isFriendly,
   isEnemy,
 };

@@ -1,6 +1,7 @@
 import { Game } from "./game/game";
 import { Board } from "./game/board";
 import { Input } from "./game/input";
+import { either } from "fp-ts";
 
 let game = Game.newGame();
 
@@ -45,6 +46,12 @@ const inputs = [
     source: { x: 6, y: 1 },
     target: { x: 7, y: 1 },
   },
+  // And stomp
+  {
+    playerId,
+    source: { x: 6, y: 1 },
+    target: { x: 7, y: 1 },
+  },
 ];
 
 const result = Input.handleInput(game, {
@@ -55,12 +62,13 @@ const result = Input.handleInput(game, {
 
 inputs.forEach((input) => {
   const result = Input.handleInput(game, input);
-  if (typeof result === "string") {
-    console.log(`Error was: ${result}`);
-  } else {
-    const board2 = Board.newBoard(result);
-    console.dir(result, { depth: null });
-    console.log(Board.renderBoard(board2));
-    game = result;
-  }
+  either.fold(
+    (e: string) => console.log(`Error was: ${e}`),
+    (g: Game) => {
+      const board2 = Board.newBoard(g);
+      console.dir(g, { depth: null });
+      console.log(Board.renderBoard(board2));
+      game = g;
+    }
+  )(result);
 });

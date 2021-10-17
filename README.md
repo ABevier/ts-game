@@ -33,3 +33,10 @@ Addtionally can take range into effect:
 
 - enemy square next to me -> melee attack
 - enemy square far away -> ranged attack
+
+### TODO:
+
+- Get prototype of just the library
+- Add jest tests
+- create cli client
+- ???
