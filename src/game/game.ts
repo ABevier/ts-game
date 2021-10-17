@@ -1,6 +1,5 @@
 import { option } from "fp-ts";
 import { pipe } from "fp-ts/lib/function";
-import { fold } from "fp-ts/lib/Tree";
 import { Record } from "../utils/record";
 import { Hero } from "./hero";
 import { Position } from "./position";
@@ -43,6 +42,7 @@ const updateHero = (game: Game, hero: Hero): Game => {
   return { ...game, heroes };
 };
 
+// TODO: bury -> graveyard????
 const removeHero = (game: Game, hero: Hero): Game => {
   const { [hero.id]: _, ...heroes } = game.heroes;
   return { ...game, heroes };

@@ -54,7 +54,7 @@ const inputs = [
   },
 ];
 
-const result = Input.handleInput(game, {
+const _ = Input.handleInput(game, {
   playerId: "player-1",
   source: { x: 1, y: 1 },
   target: { x: 3, y: 1 },

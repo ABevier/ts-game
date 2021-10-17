@@ -15,17 +15,18 @@ const apply = (game: Game, hero: Hero, target: Position): Either<string, Game> =
   return pipe(
     Game.findEnemyHeroAtPosition(game, target, hero.playerId),
     option.fold(
-      () => either.left(`nothing to stomp at ${target.x} + ${target.y}`),
+      () => either.left(`nothing to stomp at ${Position.toKey(target)}`),
       (enemy) => stompEnemy(game, hero, enemy)
     )
   );
 };
 
+//TODO: after a stomp should you go to a graveyard?
 const stompEnemy = (game: Game, hero: Hero, enemy: Hero) => {
   return pipe(
     Game.removeHero(game, enemy),
     //TODO: curry
-    (g) => Game.updateHero(game, Hero.move(hero, enemy.position)),
+    (g) => Game.updateHero(g, Hero.move(hero, enemy.position)),
     either.right
   );
 };
