@@ -50,7 +50,7 @@ const inputs = [
 ];
 
 inputs.forEach((input) => {
-  const result = Input.handleInput(game, playerId, input);
+  const result = Input.applyInput(game, playerId, input);
   either.fold(
     (e: string) => console.log(`Error was: ${e}`),
     (g: Game) => {

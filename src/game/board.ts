@@ -2,16 +2,13 @@ import { Game } from "./game";
 import { Record } from "../utils/record";
 import { range } from "../utils/utils";
 import { Position } from "./position";
+import { pipe } from "fp-ts/lib/function";
 
 //TODO: consider ImmutableJS map for this?
 type Board = ReadonlyMap<string, string>;
 
 const newBoard = (game: Game): Board => {
-  return Record.reduceEntries(
-    game.heroes,
-    (m, k, v) => m.set(Position.toKey(v.position), "X"),
-    new Map<string, string>()
-  );
+  return Record.reduceEntries(game.heroes, (m, k, v) => m.set(Position.toKey(v.position), "X"), new Map<string, string>());
 };
 
 const renderBoard = (board: Board): string => {
@@ -29,4 +26,6 @@ const renderPos = (board: Board, x: number, y: number): string => {
   return ".";
 };
 
-export const Board = { newBoard, renderBoard };
+const renderGame = (game: Game): string => pipe(game, newBoard, renderBoard);
+
+export const Board = { newBoard, renderBoard, renderGame };

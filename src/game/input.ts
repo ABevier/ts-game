@@ -21,14 +21,14 @@ const applyManyInputs = (game: Game, playerId: string, inputs: Input[]): Either<
     (accumulator: Either<string, Game>, input: Input) =>
       pipe(
         accumulator,
-        either.chain((g: Game) => handleInput(g, playerId, input))
+        either.chain((g: Game) => applyInput(g, playerId, input))
       ),
     either.right(game)
   );
 };
 
 //TODO: use either types here
-const handleInput = (game: Game, playerId: string, { source, target }: Input): Either<string, Game> => {
+const applyInput = (game: Game, playerId: string, { source, target }: Input): Either<string, Game> => {
   return pipe(
     Game.findFriendlyHeroAtPosition(game, source, playerId),
     option.fold(
@@ -50,6 +50,6 @@ const processCommand = (game: Game, hero: Hero, target: Position): Either<string
 };
 
 export const Input = {
+  applyInput,
   applyManyInputs,
-  handleInput,
 };
