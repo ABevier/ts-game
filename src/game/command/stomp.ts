@@ -11,18 +11,17 @@ const match = (hero: Hero, targetType: TargetType, target: Position): boolean =>
   return targetType == TargetType.DeadEnemy && Position.inRange(hero.position, target, 2);
 };
 
-const apply = (game: Game, hero: Hero, target: Position): Either<string, Game> => {
-  return pipe(
-    Game.findEnemyHeroAtPosition(game, target, hero.playerId),
-    option.fold(
-      () => either.left(`nothing to stomp at ${Position.toKey(target)}`),
-      (enemy) => stompEnemy(game, hero, enemy)
-    )
-  );
-};
+const apply =
+  (hero: Hero, target: Position) =>
+  (game: Game): Either<string, Game> => {
+    return pipe(
+      Game.findEnemyHeroAtPosition(game, target, hero.playerId),
+      option.fold(() => either.left(`nothing to stomp at ${Position.toKey(target)}`), stompEnemy(game, hero))
+    );
+  };
 
 //TODO: after a stomp should you go to a graveyard?
-const stompEnemy = (game: Game, hero: Hero, enemy: Hero) => {
+const stompEnemy = (game: Game, hero: Hero) => (enemy: Hero) => {
   return pipe(
     Game.removeHero(game, enemy),
     //TODO: curry

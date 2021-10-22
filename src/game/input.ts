@@ -18,9 +18,9 @@ interface Input {
 //TODO: what does fp-ts have for arrays?
 const applyManyInputs = (game: Game, playerId: string, inputs: Input[]): Either<string, Game> => {
   return inputs.reduce(
-    (accumulator: Either<string, Game>, input: Input) =>
+    (gameAcc: Either<string, Game>, input: Input) =>
       pipe(
-        accumulator,
+        gameAcc,
         either.chain((g: Game) => applyInput(g, playerId, input))
       ),
     either.right(game)
@@ -44,7 +44,11 @@ const processCommand = (game: Game, hero: Hero, target: Position): Either<string
 
   const maybeCommand = commands.find((cmd) => cmd.match(hero, targetType, target));
   if (maybeCommand) {
-    return maybeCommand.apply(game, hero, target);
+    return pipe(
+      //
+      Game.payForAction(game, 1),
+      either.chain(maybeCommand.apply(hero, target))
+    );
   }
   return either.left(`no command to execute on target: ${target.x}, ${target.y}`);
 };

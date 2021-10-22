@@ -10,21 +10,23 @@ const match = (hero: Hero, targetType: TargetType, target: Position): boolean =>
   return targetType == TargetType.Enemy && Position.inRange(hero.position, target, 1);
 };
 
-const apply = (game: Game, hero: Hero, target: Position): Either<string, Game> => {
-  return pipe(
-    Game.findEnemyHeroAtPosition(game, target, hero.playerId),
-    option.fold(
-      () => either.left("attack failed, no enemy found"),
-      (enemy) =>
-        pipe(
-          Hero.applyDamage(enemy, 250),
-          //TODO: Curry
-          (e) => Game.updateHero(game, e),
-          either.right
-        )
-    )
-  );
-};
+const apply =
+  (hero: Hero, target: Position) =>
+  (game: Game): Either<string, Game> => {
+    return pipe(
+      Game.findEnemyHeroAtPosition(game, target, hero.playerId),
+      option.fold(
+        () => either.left("attack failed, no enemy found"),
+        (enemy) =>
+          pipe(
+            Hero.applyDamage(enemy, 250),
+            //TODO: Curry
+            (e) => Game.updateHero(game, e),
+            either.right
+          )
+      )
+    );
+  };
 
 export const AttackCommand = {
   match,

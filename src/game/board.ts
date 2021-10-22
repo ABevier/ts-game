@@ -28,4 +28,9 @@ const renderPos = (board: Board, x: number, y: number): string => {
 
 const renderGame = (game: Game): string => pipe(game, newBoard, renderBoard);
 
-export const Board = { newBoard, renderBoard, renderGame };
+//TODO: this probably doesn't belong here?
+const renderHUD = (game: Game): string => {
+  return `active player: ${game.activePlayer}  action points: ${game.actionPoints}`;
+};
+
+export const Board = { newBoard, renderBoard, renderGame, renderHUD };

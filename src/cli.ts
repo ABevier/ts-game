@@ -26,10 +26,12 @@ const handleInput = (input: string, state: Game): Either<string, Game> => {
   if (match) {
     const source: Position = { x: parseInt(match[1]), y: parseInt(match[2]) };
     const target: Position = { x: parseInt(match[3]), y: parseInt(match[4]) };
-    return Input.applyInput(state, "player-1", { source, target });
+    return Input.applyInput(state, state.activePlayer, { source, target });
   } else if (input === "q") {
     rl.close();
     return either.left("");
+  } else if (input === "s") {
+    return either.right(Game.nextTurn(state));
   } else {
     return either.left("I don't understand that");
   }
@@ -39,6 +41,7 @@ const render = (text: string, game: Game) => {
   console.clear();
   console.log(text);
   console.log(Board.renderGame(game));
+  console.log(Board.renderHUD(game));
 };
 
 const prompt = (data: Either<string, Game>, oldState: Game) => {

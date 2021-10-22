@@ -1,14 +1,19 @@
-import { option } from "fp-ts";
+import { either, option } from "fp-ts";
 import { pipe } from "fp-ts/lib/function";
 import { Record } from "../utils/record";
 import { Hero } from "./hero";
 import { Position } from "./position";
 
+type Either<E, A> = either.Either<E, A>;
 type Option<V> = option.Option<V>;
 
-export type Game = {
+export interface Game {
+  readonly activePlayer: string;
+  readonly actionPoints: number;
   readonly heroes: Readonly<Record<string, Hero>>;
-};
+}
+
+export const INITIAL_ACTION_POINTS = 5;
 
 // TODO: better name for this?
 // TODO: how to handle self target type -i.e. unit targets itself?
@@ -33,8 +38,31 @@ const newGame = (): Game => {
   const heroes = heroList.reduce((acc, hero) => ({ ...acc, [hero.id]: hero }), {});
 
   return {
+    activePlayer: "player-1",
+    actionPoints: INITIAL_ACTION_POINTS,
     heroes,
   };
+};
+
+const payForAction = (game: Game, amt: number): Either<string, Game> => {
+  if (canTakeAction(game, amt)) {
+    return either.right(setActionPoints(game, game.actionPoints - amt));
+  }
+  return either.left("Not enough Action Points");
+};
+
+const canTakeAction = (game: Game, amt: number) => {
+  return game.actionPoints >= amt;
+};
+
+const setActionPoints = (game: Game, actionPoints: number) => {
+  return { ...game, actionPoints };
+};
+
+const nextTurn = (game: Game): Game => {
+  //TODO: clean this up
+  const activePlayer = game.activePlayer === "player-1" ? "player-2" : "player-1";
+  return { ...game, actionPoints: INITIAL_ACTION_POINTS, activePlayer };
 };
 
 const updateHero = (game: Game, hero: Hero): Game => {
@@ -101,6 +129,8 @@ const heroToTargetType =
 
 export const Game = {
   newGame,
+  payForAction,
+  nextTurn,
   updateHero,
   removeHero,
   findHeroAtPosition,

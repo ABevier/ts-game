@@ -11,14 +11,16 @@ const match = (hero: Hero, targetType: TargetType, target: Position): boolean =>
   return targetType == TargetType.Empty && Position.inRange(hero.position, target, 2);
 };
 
-const apply = (game: Game, hero: Hero, target: Position): Either<string, Game> => {
-  return pipe(
-    Hero.move(hero, target),
-    //TODO: curry
-    (h: Hero) => Game.updateHero(game, h),
-    either.right
-  );
-};
+const apply =
+  (hero: Hero, target: Position) =>
+  (game: Game): Either<string, Game> => {
+    return pipe(
+      Hero.move(hero, target),
+      //TODO: curry
+      (h: Hero) => Game.updateHero(game, h),
+      either.right
+    );
+  };
 
 export const MoveCommand = {
   match,

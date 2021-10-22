@@ -3,10 +3,12 @@ import { Game, TargetType } from "../game";
 import { Hero } from "../hero";
 import { Position } from "../position";
 
-type MatchCommandFunction = (hero: Hero, targetType: TargetType, target: Position) => boolean;
-type ApplyCommandFunction = (game: Game, hero: Hero, target: Position) => either.Either<string, Game>;
+type Either<E, A> = either.Either<E, A>;
 
-export type Command = {
+type MatchCommandFunction = (hero: Hero, targetType: TargetType, target: Position) => boolean;
+type ApplyCommandFunction = (hero: Hero, target: Position) => (game: Game) => Either<string, Game>;
+
+export interface Command {
   match: MatchCommandFunction;
   apply: ApplyCommandFunction;
-};
+}
