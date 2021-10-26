@@ -15,6 +15,8 @@ interface Input {
   target: Position;
 }
 
+//TODO: this needs to return an Output.  Output can be used for animation or for showing a log statement / prompt
+
 //TODO: what does fp-ts have for arrays?
 const applyManyInputs = (game: Game, playerId: string, inputs: Input[]): Either<string, Game> => {
   return inputs.reduce(

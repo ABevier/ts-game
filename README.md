@@ -39,4 +39,17 @@ Addtionally can take range into effect:
 - Get prototype of just the library
 - Add jest tests
 - create cli client
+- get it running in a browser then add client server
 - ???
+
+- Input should return a Game + Output. Output can be used for logging and animation
+- Make the Submit thing actually play the stored commands
+
+Features:
+
+- Add Crystals and win condition
+- Play cards to summon units
+- get it working in the browser
+
+- When to take a breather and refactor?? Need a solid test suite on the library.
+  - Data structures are a bit of a mess

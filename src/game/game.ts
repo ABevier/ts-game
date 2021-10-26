@@ -4,6 +4,8 @@ import { Record } from "../utils/record";
 import { Hero } from "./hero";
 import { Position } from "./position";
 
+//TODO: break this module up.  It has useless functions and things that don't belong anymore
+
 type Either<E, A> = either.Either<E, A>;
 type Option<V> = option.Option<V>;
 
@@ -127,6 +129,10 @@ const heroToTargetType =
     }
   };
 
+const findAllHeroesForPlayer = (game: Game, playerId: string): Hero[] => {
+  return Record.filterEntries(game.heroes, (hero) => hero.playerId === playerId);
+};
+
 export const Game = {
   newGame,
   payForAction,
@@ -139,4 +145,5 @@ export const Game = {
   findEnemyHeroAtPosition,
   isEnemyHeroAtPosition,
   findTargetType,
+  findAllHeroesForPlayer,
 };

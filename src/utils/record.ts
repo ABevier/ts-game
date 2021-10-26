@@ -8,14 +8,11 @@ const mapEntries = function <V, T>(record: Record<string, V>, func: MapFunc<V, T
 
 type Reducer<V, T> = (acc: T, k: string, v: V) => T;
 
-const reduceEntries = function <V, T>(
-  record: Record<string, V>,
-  func: Reducer<V, T>,
-  accumulator: T
-): T {
+const reduceEntries = function <V, T>(record: Record<string, V>, func: Reducer<V, T>, accumulator: T): T {
   return Object.entries(record).reduce((acc, [key, val]) => func(acc, key, val), accumulator);
 };
 
+//TODO: don't need to look at keys
 type Predicate<V> = (k: string, v: V) => boolean;
 const findEntry = function <V>(record: Record<string, V>, func: Predicate<V>): option.Option<V> {
   return pipe(
@@ -25,4 +22,11 @@ const findEntry = function <V>(record: Record<string, V>, func: Predicate<V>): o
   );
 };
 
-export const Record = { mapEntries, reduceEntries, findEntry };
+type ValuePredicate<V> = (v: V) => boolean;
+const filterEntries = function <V>(record: Record<string, V>, func: ValuePredicate<V>): V[] {
+  return Object.entries(record)
+    .filter(([_, val]) => func(val))
+    .map(([_, v]) => v);
+};
+
+export const Record = { mapEntries, reduceEntries, findEntry, filterEntries };
