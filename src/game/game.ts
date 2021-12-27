@@ -2,6 +2,7 @@ import { either, option } from "fp-ts";
 import { pipe } from "fp-ts/lib/function";
 import { Record } from "../utils/record";
 import { Hero } from "./hero";
+import { HeroKind } from "./heroSpec";
 import { Position } from "./position";
 
 //TODO: break this module up.  It has useless functions and things that don't belong anymore
@@ -29,12 +30,12 @@ export const enum TargetType {
 
 const newGame = (): Game => {
   const heroList: Hero[] = [
-    Hero.newHero("1", "player-1", { x: 1, y: 1 }),
-    Hero.newHero("2", "player-1", { x: 2, y: 2 }),
-    Hero.newHero("3", "player-1", { x: 1, y: 3 }),
-    Hero.newHero("4", "player-2", { x: 7, y: 1 }),
-    Hero.newHero("5", "player-2", { x: 6, y: 2 }),
-    Hero.newHero("6", "player-2", { x: 7, y: 3 }),
+    Hero.newHero("1", "player-1", { x: 1, y: 1 }, HeroKind.a),
+    Hero.newHero("2", "player-1", { x: 2, y: 2 }, HeroKind.b),
+    Hero.newHero("3", "player-1", { x: 1, y: 3 }, HeroKind.a),
+    Hero.newHero("4", "player-2", { x: 7, y: 1 }, HeroKind.a),
+    Hero.newHero("5", "player-2", { x: 6, y: 2 }, HeroKind.b),
+    Hero.newHero("6", "player-2", { x: 7, y: 3 }, HeroKind.a),
   ];
 
   const heroes = heroList.reduce((acc, hero) => ({ ...acc, [hero.id]: hero }), {});

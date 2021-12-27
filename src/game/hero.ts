@@ -1,3 +1,4 @@
+import { HeroKind, HeroSpec } from "./heroSpec";
 import { Position } from "./position";
 
 export type Hero = {
@@ -5,14 +6,18 @@ export type Hero = {
   readonly playerId: string;
   readonly hp: number;
   readonly position: Position;
+  readonly kind: string;
 };
 
-const newHero = (id: string, playerId: string, position: Position): Hero => {
+const newHero = (id: string, playerId: string, position: Position, kind: HeroKind): Hero => {
+  const { maxHP } = HeroSpec.specForKind(kind);
+
   return {
     id,
     playerId,
-    hp: 800,
+    hp: maxHP,
     position,
+    kind,
   };
 };
 
