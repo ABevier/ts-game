@@ -1,74 +1,50 @@
-import { Game } from "./game/game";
-import { Board } from "./game/board";
-import { Input } from "./game/input";
-import { either } from "fp-ts";
+import { Battle, Command, findActorBySlot } from "./lib";
 
-const initialGame = Game.newGame();
+const sides = [
+  {
+    active: [
+      { id: "1" },
+      { id: "2" },
+    ],
+    bench: [
+      { id: "3" },
+      { id: "4" },
+    ]
+  },
+  {
+    active: [
+      { id: "5" },
+      { id: "6" },
+    ],
+    bench: [
+      { id: "7" },
+      { id: "8" },
+    ]
+  },
+]
+  
+const battle: Battle = { sides }
 
-// should be fine because we're immutable
-let game = initialGame;
+const cmd: Command = {
+  source: { side: 0, position: 0},
+  target: { side: 1, position: 0},
+}
 
-const board = Board.newBoard(initialGame);
-console.log(Board.renderBoard(board));
-
-const playerId = "player-1";
-const inputs = [
-  {
-    source: { x: 1, y: 1 },
-    target: { x: 3, y: 1 },
-  },
-  {
-    source: { x: 3, y: 1 },
-    target: { x: 5, y: 1 },
-  },
-  {
-    source: { x: 5, y: 1 },
-    target: { x: 6, y: 1 },
-  },
-  // Start attacking
-  {
-    source: { x: 6, y: 1 },
-    target: { x: 7, y: 1 },
-  },
-  {
-    source: { x: 6, y: 1 },
-    target: { x: 7, y: 1 },
-  },
-  {
-    source: { x: 6, y: 1 },
-    target: { x: 7, y: 1 },
-  },
-  {
-    source: { x: 6, y: 1 },
-    target: { x: 7, y: 1 },
-  },
-  // And stomp
-  {
-    source: { x: 6, y: 1 },
-    target: { x: 7, y: 1 },
-  },
-];
-
-inputs.forEach((input) => {
-  const result = Input.applyInput(game, playerId, input);
-  either.fold(
-    (e: string) => console.log(`Error was: ${e}`),
-    (g: Game) => {
-      const board2 = Board.newBoard(g);
-      console.dir(g, { depth: null });
-      console.log(Board.renderBoard(board2));
-      game = g;
-    }
-  )(result);
-});
-
-const res = Input.applyManyInputs(initialGame, playerId, inputs);
-either.fold(
-  (e: string) => console.log(`MANY INPUTS - Error was: ${e}`),
-  (g: Game) => {
-    console.log("MANY RESULT:");
-    const board2 = Board.newBoard(g);
-    console.dir(g, { depth: null });
-    console.log(Board.renderBoard(board2));
+// run command
+function runCommand() {
+  const source = findActorBySlot(battle, cmd.source)
+  if (!source) {
+    console.log("did not find source")
+    return
   }
-)(res);
+
+  const target = findActorBySlot(battle, cmd.target)
+  if (!target) {
+    console.log("did not find source")
+    return
+  }
+
+  console.log(`actor ${source.id} will attack ${target.id}`)
+}
+
+runCommand()
